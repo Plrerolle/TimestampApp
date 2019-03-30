@@ -5,6 +5,7 @@
 var express = require('express');
 var app = express();
 
+
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
 // so that your API is remotely testable by FCC 
 var cors = require('cors');
@@ -24,7 +25,20 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
+// Getting the current time when accessing the 'api/timestamp/' route
+app.get('/api/timestamp', function(req, res){
+  res.json({'unix': Date.now(), 'utc': new Date().toUTCString()})
+});
 
+app.get('/api/timestamp/:time_str', function(req, res){
+  let date_str = req.params.time_str
+  if (new Date(date_str) !== "Invalid Date" && !isNaN(new Date(date_str))){
+    res.json({'unix': new Date(date_str).getTime() , 'utc': new Date(date_str).toUTCString()})
+  }
+  else {
+    res.json({"error": "Invalid Date"})
+  }
+});
 
 // listen for requests :)
 var listener = app.listen(process.env.PORT, function () {
